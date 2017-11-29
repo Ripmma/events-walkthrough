@@ -1,12 +1,12 @@
 // Notice that below, I did not include , {Component} after import
 // React
 import React from 'react';
-
-//
 import Todo from './Todo';
 
 
 class App extends React.Component {
+
+
   constructor(){
     super();
 
@@ -14,6 +14,11 @@ class App extends React.Component {
       tasks: ["first", "second", "third"],
       input: ''
     }
+    // manualling bind your functions here
+    this.handleSubmit =this.handleSubmit.bind(this)
+    this.handleChange =this.handleChange.bind(this)
+    this.handleDelete =this.handleDelete.bind(this)
+    this.handleUpdate =this.handleUpdate.bind(this)
   }
 
 
@@ -26,6 +31,14 @@ class App extends React.Component {
 
   }
 
+  handleUpdate(change){
+    this.setState({
+      tasks:this.state.tasks.map(task=> task ===change[0]?
+        change[1] :
+        task)
+    })
+  }
+
   handleChange(e){
     e.preventDefault();
     this.setState({
@@ -34,19 +47,25 @@ class App extends React.Component {
 
   }
 
-
+  handleDelete(e){
+    this.setState({
+      tasks: this.state.tasks.filter( (task)=> task !== e)
+    })
+  }
 
   render() {
 
-    let tasks = this.state.tasks.map((task, index)=>
-      <Todo key={index} task={task} />
+    let tasks = this.state.tasks.map((task)=>
+      // Change this passed in function
+      <Todo task={task} del={ this.handleDelete } up={(e)=>this.handleUpdate(e)}/>
     )
+
     return (
       <div>
+      {/*Change this passed in function */}
+        <form onSubmit={ this.handleSubmit }>
 
-        <form onSubmit={(event)=> this.handleSubmit(event)}>
-
-          <input onChange={(event)=>this.handleChange(event)} />
+          <input onChange={ this.handleChange } />
           <input type="submit"/>
         </form>
 
